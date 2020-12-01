@@ -1,0 +1,53 @@
+globals [                                // variables globales            
+  // nombre d'agents par strategie
+  num-bad
+  num-good
+  num-influenceable
+  num-resentful
+
+  // scores par type de strategie, utile pour redistribuer les effectifs par strategie
+  score-bad
+  score-good
+  score-influenceable
+  score-resentful
+
+]
+ 
+
+// les races de turtles
+breed [Bads bad ]                       // les méchants
+breed [Goods good]                      // les gentils
+breed [Influenceables influenceable]    // les influençables
+breed [Resentfuls resentful]            // les rancuniers
+
+// les attribus des turtles
+turtles-own [victim tormentor score]          // concerne toutes les tortues car tout type de tortues a une victime et un bourreau
+victim // celui qui est frappé
+tormentor // le bourreau, celui qui frappe la tortue (peut être Nobody)
+
+
+to setup
+  clear-all
+  create-turtles population
+  [ if breed = Bads [ set color red ] 
+    if breed = Goods [ set color green ]  
+    if breed = Influenceables [ set color magenta ]       
+    if breed = Resentfuls [ set color pink ]        
+    setxy random-xcor random-ycor       // les coordonnées x et y sont initialisées de façon aléatoires
+    set victim nobody                   // pour l'instant personne n'est victime
+    set tormentor nobody ]              // pour l'instant personne n'est bourreau
+  reset-ticks 
+end
+
+to go
+ask turtles
+  [
+      ask patches in-radius 3           // 3 est une valeur arbitraire pour la zone d'attaque
+      [ choose-victim ] ]               // choose-victim, procédure a définir
+tick
+end
+
+
+to choose-victim
+ ask one-of turtles with [ tormentor = nobody ]    // on choisi un agent dans la zone et on verifie si la cible a déjà été choisie par un autre agent
+end
